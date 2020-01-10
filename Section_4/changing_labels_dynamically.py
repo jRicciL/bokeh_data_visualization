@@ -4,7 +4,8 @@ import os, sys
 import pickle
 
 from bokeh.plotting import figure, curdoc
-from bokeh.palettes import Spectral4
+from bokeh.transform import factor_cmap
+from bokeh.palettes import Spectral5
 from bokeh.models import ColumnDataSource
 
 #----------------------------------------
@@ -24,15 +25,23 @@ df_cdk2['mds_1'] = mds[0]
 df_cdk2['mds_2'] = mds[1]
 #----------------------------------------
 
+# ColumnData Source
 source = ColumnDataSource(data = df_cdk2)
+
+# Creating the colormap
+P_LABELS = df_cdk2['Labels_conf'].unique()
+cmap_color = factor_cmap('Labels_conf', 'Dark2_5', P_LABELS)
 
 #Creating the plot
 f = figure(plot_width = 1200, plot_height = 1200)
+f.match_aspect = True
 f.title.text = 'MDS projection - CDK2 pdb crystals'
 f.sizing_mode = 'scale_height'
+f.toolbar_location = 'above'
+f.toolbar.logo = None
 
 # Plotting some points
-f.scatter(x = 'mds_1', y = 'mds_2', source = source)
+f.circle(x = 'mds_1', y = 'mds_2', source = source, size = 15, color = cmap_color, alpha = 0.7)
 
 # To create the plot with bokeh server
 curdoc().add_root(f)
