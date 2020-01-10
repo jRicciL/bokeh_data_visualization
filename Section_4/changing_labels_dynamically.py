@@ -11,6 +11,7 @@ from bokeh.models import ColumnDataSource
 from bokeh.models import LabelSet
 # Widgets
 from bokeh.models.widgets import Select
+from bokeh.layouts import layout
 
 #----------------------------------------
 # This section is not directly related to the plotting tutorial
@@ -28,6 +29,7 @@ else: sys.exit('El archivo json/mds no existe.\nEjecución terminada.')
 df_cdk2['mds_1'] = mds[0]
 df_cdk2['mds_2'] = mds[1]
 df_cdk2.reset_index(inplace = True)
+df_cdk2.Resolution = df_cdk2.Resolution.round(2)
 #----------------------------------------
 
 # ColumnData Source
@@ -38,7 +40,8 @@ P_LABELS = df_cdk2['Labels_conf'].unique()
 cmap_color = factor_cmap('Labels_conf', 'Dark2_6', P_LABELS)
 
 #Creating the plot
-f = figure(plot_width = 1200, plot_height = 1200)
+f = figure(plot_width = 900, plot_height = 900,
+active_scroll='wheel_zoom')
 f.match_aspect = True
 f.title.text = 'MDS projection - CDK2 pdb crystals'
 f.sizing_mode = 'scale_height'
@@ -52,6 +55,20 @@ f.add_layout(labels)
 # Plotting some points
 f.circle(x = 'mds_1', y = 'mds_2', source = source, size = 15, color = cmap_color, alpha = 0.7)
 
+# Select labels widget
+## These are the posible values to show
+options = [("index", "PDB ID"),
+            ("Inhib", "Ligand Name"),
+            ("Resolution", "Resolution")]
+select = Select(title = 'Atribute to show',
+    options = options)
+
+# Funtion to update
+def update_labels(attr, old, new):
+    labels.text = select.value
+# The following code defines the action to perform
+select.on_change("value", update_labels)
+
 # Makeup
 f.title.align = 'center'
 f.title.text_font_size = '2em'
@@ -64,7 +81,10 @@ f.axis.major_label_text_font_size = '1.2em'
 f.xaxis.axis_label = 'First Dimension'
 f.yaxis.axis_label = 'Second Dimension'
 
+# Create the lay_out
+lay_out = layout([[select]])
 # To create the plot with bokeh server
+curdoc().add_root(lay_out)
 curdoc().add_root(f)
 # Execution:
 # bokeh serve file.py
