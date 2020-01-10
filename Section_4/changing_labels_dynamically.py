@@ -82,9 +82,9 @@ f.xaxis.axis_label = 'First Dimension'
 f.yaxis.axis_label = 'Second Dimension'
 
 # Create the lay_out
-lay_out = layout([[select]])
+lay_out = layout([[f, select]])
 # To create the plot with bokeh server
 curdoc().add_root(lay_out)
-curdoc().add_root(f)
+#curdoc().add_root(f)
 # Execution:
 # bokeh serve file.py
