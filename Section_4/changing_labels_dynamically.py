@@ -10,7 +10,7 @@ from bokeh.models import ColumnDataSource
 # Labels
 from bokeh.models import LabelSet
 # Widgets
-from bokeh.models.widgets import Select
+from bokeh.models.widgets import Select, RadioGroup
 from bokeh.layouts import layout
 
 #----------------------------------------
@@ -53,21 +53,40 @@ labels = LabelSet(x = 'mds_1', y = 'mds_2', text = 'index', source = source)
 f.add_layout(labels)
 
 # Plotting some points
-f.circle(x = 'mds_1', y = 'mds_2', source = source, size = 15, color = cmap_color, alpha = 0.7)
+points_crystals = f.circle(x = 'mds_1', y = 'mds_2', source = source, size = 12, color = cmap_color, alpha = 0.7)
 
 # Select labels widget
 ## These are the posible values to show
 options = [("index", "PDB ID"),
             ("Inhib", "Ligand Name"),
-            ("Resolution", "Resolution")]
+            ("Resolution", "Resolution"),
+            ('None', 'Hide')]
 select = Select(title = 'Atribute to show',
     options = options)
 
-# Funtion to update
+# Function to update
 def update_labels(attr, old, new):
-    labels.text = select.value
+    if select.value == 'None':
+        labels.text_alpha = 0
+    else:
+        labels.text_alpha = 1
+        labels.text = select.value
 # The following code defines the action to perform
 select.on_change("value", update_labels)
+
+## Changing the size of the points
+labels_sizes = ['Pequeño',
+                'Mediano',
+                'Grande']
+list_sizes =  [8, 12, 15]
+#select_size = Select(title = 'Points sizes', options = options_size)
+radioGroup_size = RadioGroup(labels= labels_sizes, active = 1)
+# Function to update
+def update_points_size(attr, old, new):
+    index = radioGroup_size.active
+    points_crystals.glyph.size = list_sizes[index]
+radioGroup_size.on_change("active", update_points_size)
+
 
 # Makeup
 f.title.align = 'center'
@@ -82,7 +101,7 @@ f.xaxis.axis_label = 'First Dimension'
 f.yaxis.axis_label = 'Second Dimension'
 
 # Create the lay_out
-lay_out = layout([[f, select]])
+lay_out = layout([[f, [select, radioGroup_size]]])
 # To create the plot with bokeh server
 curdoc().add_root(lay_out)
 #curdoc().add_root(f)
