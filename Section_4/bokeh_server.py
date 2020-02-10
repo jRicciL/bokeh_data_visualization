@@ -1,4 +1,4 @@
-# herein we are running abokeh server
+# herein we are running a bokeh server
 # how to create widgets with bokeh
 
 # importing libraries
