@@ -49,14 +49,14 @@ def update():
     source.stream(new_data, rollover = 100)
 
 f.xaxis.formatter = DatetimeTickFormatter(
-    seconds = ['%Y-%n-%d-%H-%M-%S'],
-    minsec = ['%Y-%n-%d-%H-%M-%S'],
-    minutes = ['%Y-%n-%d-%H-%M-%S'],
-    hourmin = ['%Y-%n-%d-%H-%M-%S'],
-    hours = ['%Y-%n-%d-%H-%M-%S'],
-    days = ['%Y-%n-%d-%H-%M-%S'],
-    months = ['%Y-%n-%d-%H-%M-%S'],
-    years = ['%Y-%n-%d-%H-%M-%S']
+    seconds = ['%Y-%m-%d-%H:%M:%S'],
+    minsec = ['%Y-%m-%d-%H:%M:%S'],
+    minutes = ['%Y-%m-%d-%H:%M:%S'],
+    hourmin = ['%Y-%m-%d-%H:%M:%S'],
+    hours = ['%Y-%m-%d-%H:%M:%S'],
+    days = ['%Y-%m-%d-%H:%M:%S'],
+    months = ['%Y-%m-%d-%H:%M:%S'],
+    years = ['%Y-%m-%d-%H:%M:%S']
 )
 
 # Rotate the labels
