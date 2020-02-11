@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 
 from bokeh.plotting import figure, curdoc
 from bokeh.models import ColumnDataSource
+from bokeh.models import DatetimeTickFormatter
+
+from datetime import datetime
 
 # Function for webscrapping
 URL = 'https://bitcoincharts.com/markets/bitstampUSD.html'
@@ -20,8 +23,8 @@ def scrap_value():
     return(last_trade)
 
 source = ColumnDataSource({
-    'x': [1.0],
-    'y': [scrap_value()]
+    'x': [],
+    'y': []
 })
 
 f = figure()
@@ -37,13 +40,27 @@ def update():
     # updates the data
     y = scrap_value()
     # x is the last x data
-    x = source.data['x'][-1] + 1
+    x = datetime.now()
     new_data = {
         # Create random points
         'x': [x],
         'y': [y],
     }
     source.stream(new_data, rollover = 100)
+
+f.xaxis.formatter = DatetimeTickFormatter(
+    seconds = ['%Y-%n-%d-%H-%M-%S'],
+    minsec = ['%Y-%n-%d-%H-%M-%S'],
+    minutes = ['%Y-%n-%d-%H-%M-%S'],
+    hourmin = ['%Y-%n-%d-%H-%M-%S'],
+    hours = ['%Y-%n-%d-%H-%M-%S'],
+    days = ['%Y-%n-%d-%H-%M-%S'],
+    months = ['%Y-%n-%d-%H-%M-%S'],
+    years = ['%Y-%n-%d-%H-%M-%S']
+)
+
+# Rotate the labels
+f.xaxis.major_label_orientation = np.pi /4
 
 curdoc().add_root(f)
 curdoc().add_periodic_callback(update, 2000)
